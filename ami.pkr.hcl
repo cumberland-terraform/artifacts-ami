@@ -5,7 +5,9 @@ source "amazon-ebs" "ami" {
   kms_key_id                  = var.kms
   region                      = var.aws.region
   source_ami                  = data.amazon-ami.ami.id
-  ssh_username                = local.platform_defaults.username
+  ssh_username                = "ubuntu"
+  temporary_key_pair_type     = "ed25519"
+  associate_public_ip_address = true
   subnet_id                   = var.aws.subnet_id
   tags                        = local.tags
   vpc_id                      = var.aws.vpc_id

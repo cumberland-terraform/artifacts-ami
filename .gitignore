@@ -5,3 +5,4 @@
 **/.terraform.lock.hcl
 ec2/**/keys/**
 !ec2/**/keys/**/.gitkeep
+.pkrvars.hcl

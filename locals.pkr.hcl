@@ -2,6 +2,9 @@ locals {
     # PLATFORM DEFAULTS
     ##   Configuration properties that are enforced
     platform_defaults           = {
+        accounts                = {
+            canonical           = "099720109477"
+        }
         encrypt_boot            = true
         username                = "cumberland"
         tags                    = {
