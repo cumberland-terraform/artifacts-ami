@@ -1,41 +1,22 @@
-packer {
-  required_plugins {
-    amazon = {
-      source  = "github.com/hashicorp/amazon"
-      version = "~> 1.0" # Or latest
-    }
-  }
-}
-
-source "amazon-ebs" "ubuntu" {
-  ami_name           = "ubuntu-latest-{{timestamp}}" # Naming convention is important
-  instance_type      = "t3.micro" # Or your preferred instance type
-  region             = "us-east-1"  # Your desired AWS region
-  source_ami_filter {
-    filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-latest-20.04-amd64-server" # Example: Ubuntu 20.04. Adjust as needed
-      root-device-type    = "ebs"
-      virtualization-type = "hvm"
-    }
-    most_recent = true
-    owners      = ["063491364108"] # Canonical's owner ID.  Important for verified Ubuntu AMIs
-  }
-
-  ssh_username = "ubuntu" # Default username for Ubuntu AMIs
-
-  tags = {
-    Name        = "Ubuntu Latest"
-    CreatedBy = "Packer"
-  }
+source "amazon-ebs" "ami" {
+  ami_name                    = local.name
+  encrypt_boot                = local.platform_defaults.encrypt_boot
+  instance_type               = var.ami.instance_type
+  kms_key_id                  = var.kms
+  region                      = var.aws.region
+  source_ami                  = data.amazon-ami.ami.id
+  ssh_username                = local.platform_defaults.username
+  subnet_id                   = var.aws.subnet_id
+  tags                        = local.tags
+  vpc_id                      = var.aws.vpc_id
 }
 
 build {
-  sources = ["source.amazon-ebs.ubuntu"]
+  sources                     = ["source.amazon-ebs.ami"]
 
   provisioner "shell" {
-    inline = [
-      "sudo apt-get update -y",
-      "sudo apt-get install -y amazon-ssm-agent" # Install the SSM agent here
-    ]
+    script                    = local.conditions.is_linux ? (
+                                local.scripts.linux
+                              ) : local.scripts.windows
   }
 }
