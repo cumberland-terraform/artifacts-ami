@@ -31,9 +31,8 @@ variable "ami" {
         virtualization_type     = string
     })
     default                     = {
-        # `name` is used in ami-filters. Latest image will always be taken.
-        name                    = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server*"
-        instance_type           = "t2.micro"
+        name                    = "ubuntu.images/hvm-ssd/ubuntu-jammay-22.04-arm64-server*"
+        instance_type           = "t4g.nano"
         root_device_type        = "ebs"
         virtualization_type     = "hvm"
     }
